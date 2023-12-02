@@ -1,5 +1,5 @@
 ---
-title: "Trebuchet?!"
+title: "Trebuchet?! Part One"
 author: "Aman Das"
 format: html
 ---
@@ -64,3 +64,4 @@ write_lines(res, "output.txt")
 
 ## Conclusion
 
+Fairly straightforward. Helped me remember how to manipulate data.

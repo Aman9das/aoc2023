@@ -1,0 +1,80 @@
+---
+title: "Cube Conundrum Part One"
+author: "Aman Das"
+date: 2023-12-2
+---
+
+## Introduction
+
+It's my brother's birthday today. Let's get this cute possibility check done.
+
+**TODO:**
+
+-   Extract input file
+-   organize the input into a data frame
+-   complete the puzzle check
+-   sum the valid game ids
+-   output the result
+
+```{r}
+library(tidyverse)
+```
+
+## Read the input
+
+```{r}
+games = read_delim("input.txt", delim=":", col_names = c("game", "result"))
+```
+
+## Manipulate the games data
+
+```{r}
+games = games %>%                         # get the data
+  mutate(                                 # manipulate it 
+    game = game %>%                       # from the game id column
+      str_extract("\\d+") %>%             # get the 1st numeral
+      as.numeric(),                       # and convert to numeric
+    red = result %>%                      # RED get results column
+      str_extract_all( "\\d+ red") %>%    # get all the "000 red" sub strings as a vector
+      str_extract_all("\\d+") %>%         # get numerals from each vector
+      lapply( as.numeric) %>%             # convert each element of vector to numeric
+      lapply( max) %>%                    # find max in each vector
+      flatten_dbl(),                      # from list of vectors of max, to vector of max
+    green = result %>%                    # GREEN
+      str_extract_all( "\\d+ green") %>%
+      str_extract_all("\\d+") %>%
+      lapply( as.numeric) %>%
+      lapply( max) %>%
+      flatten_dbl(),
+    blue = result %>%                     # BLUE
+      str_extract_all( "\\d+ blue") %>%
+      str_extract_all("\\d+") %>%
+      lapply( as.numeric) %>%
+      lapply( max) %>%
+      flatten_dbl(),
+    result = NULL
+  )
+```
+
+## Check the conditions and sum the game numbers
+
+```{r}
+result = games %>%                        # get the tibble
+  filter(                                 # filter rows
+    red <= 12,                            # such that no. of max red cubes <= 12
+    green <= 13,                          # no. of max green cubes <= 13
+    blue <= 14                            # no. of max blue cubes <= 14
+  ) %>%                                   # get the filtered tibble
+  select( "game" ) %>%                    # get the game id column
+  sum()                                   # add them all up
+```
+
+## Output the result
+
+```{r}
+write_lines(result, "output.txt")         # output
+```
+
+## Conclusion
+
+I love and hate regex. Need to learn pipe operations.

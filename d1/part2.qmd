@@ -1,5 +1,5 @@
 ---
-title: "Trebuchet?!"
+title: "Trebuchet?! Part Two"
 author: "Aman Das"
 format: html
 ---
@@ -96,3 +96,7 @@ res = sum(list_res)
 ```{r}
 write_lines(res, "output.txt")
 ```
+
+## Conclusion
+
+Oh I need to learn the tidy way.

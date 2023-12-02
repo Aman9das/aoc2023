@@ -1,0 +1,76 @@
+---
+title: "Cube Conundrum Part Two"
+author: "Aman Das"
+date: 2023-12-2
+---
+
+## Introduction
+
+Ugh learning tidyverse is not an easy affair. But this part 2 seems simpler that part 2.
+
+**TODO:**
+
+-   Extract input file
+-   organize the input into a data frame
+-   compute the powers
+-   add the powers of each game
+-   output the result
+
+```{r}
+library(tidyverse)
+```
+
+## Read the input
+
+```{r}
+games = read_delim("input.txt", delim=":", col_names = c("game", "result"))
+```
+
+## Format the games data
+
+```{r}
+games = games %>%                         # get the data
+  mutate(                                 # manipulate it 
+    game = game %>%                       # from the game id column
+      str_extract("\\d+") %>%             # get the 1st numeral
+      as.numeric(),                       # and convert to numeric
+    red = result %>%                      # RED get results column
+      str_extract_all( "\\d+ red") %>%    # get all the "000 red" sub strings as a vector
+      str_extract_all("\\d+") %>%         # get numerals from each vector
+      lapply( as.numeric) %>%             # convert each element of vector to numeric
+      lapply( max) %>%                    # find max in each vector
+      flatten_dbl(),                      # from list of vectors of max, to vector of max
+    green = result %>%                    # GREEN
+      str_extract_all( "\\d+ green") %>%
+      str_extract_all("\\d+") %>%
+      lapply( as.numeric) %>%
+      lapply( max) %>%
+      flatten_dbl(),
+    blue = result %>%                     # BLUE
+      str_extract_all( "\\d+ blue") %>%
+      str_extract_all("\\d+") %>%
+      lapply( as.numeric) %>%
+      lapply( max) %>%
+      flatten_dbl(),
+    result = NULL,
+    power = red*green*blue                # Multiply the needed cubes of all colors
+  )
+```
+
+## Compute the sum of powers
+
+```{r}
+result = games %>%                        # get the tibble
+  select( "power") %>%                    # select the power row
+  sum()                                   # add it up
+```
+
+## Output the result
+
+```{r}
+write_lines(result, "output.txt")         # output
+```
+
+## Conclusion
+
+Part 2 is easier once part 1 is done :D
